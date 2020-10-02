@@ -1,0 +1,6 @@
+/logs/*.log
+**/.pytest_cache
+/Pipfile.lock
+**/.vscode
+**/__pycache__
+/config/config.json
