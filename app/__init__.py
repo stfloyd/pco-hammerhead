@@ -117,6 +117,10 @@ def process(args, config):
     groups = [
         (g['data']['id'], g['data']['attributes']['name']) for g in pco.iterate(f'/groups/v2/group_types/{gt_id}/groups')
     ]
+    
+    for i, g in enumerate(groups):
+        tags = [t['data']['id'] for t in pco.iterate(f"/groups/v2/groups/{g[0]}/tags")]
+        groups[i].append(tags)
 
     print('Tag Groups:')
     for i, gt in enumerate(tag_groups):
@@ -177,6 +181,14 @@ def _automate_browser_operation(pco_username, pco_password, groups, tag):
     web.press(web.Key.ENTER)
 
     for g in groups:
+        if len(g[2]) > 0:
+            skip_group = False
+            for t in g[2]:
+                if t == tag[0]:
+                    skip_group = True
+                    break
+            if skip_group: continue
+                
         tag_label_for = f'tag-group-tag-{tag[0]}'
         web.go_to(f'https://groups.planningcenteronline.com/groups/{g[0]}/settings')
         time.sleep(2.0)
